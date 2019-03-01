@@ -1,0 +1,8 @@
+(library
+  (name ysc2229_part_two)
+  (inline_tests)                
+  (public_name ysc2229-part-two)
+  (preprocess (pps ppx_inline_test ppx_expect))
+  (wrapped false)
+  (libraries ysc2229-part-one)
+  (synopsis "Last seven weeks of YSC2229"))
