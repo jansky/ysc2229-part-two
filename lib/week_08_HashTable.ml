@@ -226,3 +226,29 @@ end
 
 module RHT = ResizableListBasedHashTable(IntString)
 module ResizableHTTester = HashTableTester(RHT)
+
+
+let insert_and_get_bulk_simple a m = 
+  Printf.printf "Creating simple hash table:\n";
+  let ht = Week_03.time (SimpleHTTester.mk_test_table_from_array_length a) m in
+  Printf.printf "Fetching from simple hash table on the array of size %d:\n" (Array.length a);
+  let _ = Week_03.time SimpleHTTester.test_table_get ht a in ()
+
+let insert_and_get_bulk_resizable a m = 
+  Printf.printf "Creating resizable hash table:\n";
+  let ht = Week_03.time (ResizableHTTester.mk_test_table_from_array_length a) m in
+  Printf.printf "Fetching from resizable hash table on the array of size %d:\n" (Array.length a);
+  let _ = Week_03.time ResizableHTTester.test_table_get ht a in ()
+
+(* 
+
+Week_08_HashTable.compare_hashing_time 15000 50;;
+
+ *)
+
+let compare_hashing_time n m = 
+  let a = Week_03.generate_key_value_array n in
+  insert_and_get_bulk_simple a m;
+  print_endline "";
+  insert_and_get_bulk_resizable a m;
+
