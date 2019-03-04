@@ -14,30 +14,13 @@ module type HashTable = sig
     (key * 'v) hash_table -> unit
 end
 
-(* 3. Testing hash-tables *)
-
-module HashTableTester(H : HashTable) = struct
-
-  module MyHT = H
-  open MyHT
-      
-  (* Create a table with a capacity m from an array a 
-     and return it *)
-  let mk_test_table_from_array_length a m =
-    mk_new_table m
-
-  (* Test that all elements of a is in ht *)
-  let test_table_get ht a = true
-
-end
-
-(* 4. Exposing keys *)
+(* Exposing keys *)
 
 module type KeyType = sig
   type t
 end
 
-(* 5. Redefining our hash-table *)
+(* Redefining our hash-table *)
 
 (* Redefining our hash-table *)
 module SimpleListBasedHashTable(K: KeyType) = struct
@@ -93,6 +76,25 @@ module SimpleListBasedHashTable(K: KeyType) = struct
         printf "%d -> [ %s]\n" i s)
     done
 end 
+
+(* Testing hash-tables *)
+
+module HashTableTester(H : HashTable) = struct
+
+  module MyHT = H
+  open MyHT
+      
+  (* Create a table with a capacity m from an array a 
+     and return it *)
+  let mk_test_table_from_array_length a m =
+    mk_new_table m
+
+  (* Test that all elements of a is in ht *)
+  let test_table_get ht a = false
+
+end
+
+
 
 
 (* Testing our simple implementation *)
