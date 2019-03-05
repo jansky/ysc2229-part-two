@@ -195,22 +195,3 @@ let compare_hashing_time_simple_bloom n m =
 compare_hashing_time_simple_bloom 15000 20;;
 
 *)
-
-(*
-
-Exercise: implement a resizeable hash-table with a bloom filter
-
-Exercise: Implement a URL shortener:
-
-[From Quora]
-URL Shorteners Want to shorten the URL? Make a call to the server,
-   which generates a fresh URL and sends it back. But how does it
-   check for uniqueness?
-
-That’s right, use a bloom filter to tell if this URL has already been
-   generated earlier, and keep generating new ones till it returns
-   false. As the filter is in memory, this tends to be cheaper than
-   querying the database.
-
-
-*)
