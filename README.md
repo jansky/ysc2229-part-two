@@ -58,7 +58,7 @@ opam reinstall .
 To uninstall the package, type in terminal
 
 ```
-opam uninstall ysc2229-part-one
+opam uninstall ysc2229-part-two
 ```
 
 ## Running with utop
@@ -70,7 +70,7 @@ dune utop . --profile release
 ```
 
 See the
-[part-one libraries](https://github.com/ilyasergey/ysc2229-examples)
+[part-one libraries](https://github.com/ilyasergey/ysc2229-part-one)
 and
 [complementary project](https://github.com/ilyasergey/ysc2229-examples)
 with examples on how to the libraries in your development.
