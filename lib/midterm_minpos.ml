@@ -18,6 +18,80 @@ let test_smallest_missing_non_negative_integer candidate =
 
 (* A strawman for demonstration: rearrange a permutation *)
 
+let rearrange_perm arr = 
+  let n = Array.length arr in 
+
+  let at_its_place i = 
+    i = arr.(i) &&
+    arr.(i) >= 0 &&
+    arr.(i) < n
+  in
+  
+  let rec put_in_place i = 
+    if at_its_place i 
+    then ()
+    else (
+      swap arr i arr.(i);
+      put_in_place i)
+
+  in
+
+  for i = 0 to n - 1 do
+    put_in_place i
+  done
+
+let min_pos_not_in arr = 
+  let n = Array.length arr in 
+  
+  let outsider i = 
+    arr.(i) < 0 || arr.(i) >= n 
+  in
+
+  let duplicate i =
+    (not (outsider i)) &&
+    arr.(i) <> i &&
+    arr.(i) = arr.(arr.(i))
+
+  in
+
+  let at_its_place i = 
+    arr.(i) >= 0 &&
+    arr.(i) < n &&
+    i = arr.(i)
+  in
+
+  let rec put_in_place_or_mark i = 
+    if at_its_place i 
+    then ()
+    else if outsider i || duplicate i
+    then arr.(i) <- -1
+    else (
+      swap arr i arr.(i);
+      put_in_place_or_mark i)
+  in
+  
+  (* First pass *)
+  for i = 0 to n - 1 do
+    put_in_place_or_mark i
+  done;
+
+  let rec second_pass i = 
+    if i = n then n
+    else if arr.(i) < 0 
+    then i
+    else second_pass @@ i + 1
+
+
+  in 
+  second_pass 0
+
+(* let%test _ =
+ *   test_smallest_missing_non_negative_integer min_pos_not_in *)
+
+
+
+
+
 
 
 (* Solution 1 *)

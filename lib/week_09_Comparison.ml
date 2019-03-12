@@ -43,7 +43,9 @@ let evaluate_search search name s ps pn =
 
 let compare_string_search n m =
   let (s, ps, pn) = generate_string_and_patterns n m in
-  ()
+  evaluate_search naive_search_rec "Naive" s ps pn;
+  evaluate_search rabin_karp_search "Rabin-Karp" s ps pn;
+  evaluate_search rabin_karp_search "KMP" s ps pn
 
 
 
@@ -66,4 +68,6 @@ Try on compare_string_search_repetitive 50000;;
 
 let compare_string_search_repetitive n =
   let (s, ps, pn) = repetitive_string n in
-  ()
+  evaluate_search naive_search_rec "Naive" s ps pn;
+  evaluate_search rabin_karp_search "Rabin-Karp" s ps pn;
+  evaluate_search rabin_karp_search "KMP" s ps pn
