@@ -18,3 +18,7 @@ clean:
 	dune clean
 # Remove remaining files/folders ignored by git as defined in .gitignore (-X).
 	git clean -dfXq
+
+# Run utop
+utop:
+	dune utop . --profile release
