@@ -32,10 +32,10 @@ SOFTWARE.
 (* let%test _ = test_fib memo_fib 25 *)
 
 (* let%test _ = 
- *   knapsack_max_weight 4 fruit_sack = 6 *)
+ *   knapsack_max_price 4 fruit_sack = 6 *)
 
 (* let%test _ = 
- *   let (p, _) = knapsack_max_weight_dynamic 4 fruit_sack in
+ *   let (p, _) = knapsack_max_price_dynamic 4 fruit_sack in
  *   p = 6 *)
 
 (* open Week_10_BinaryEncodings *)
