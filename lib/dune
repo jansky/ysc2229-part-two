@@ -4,5 +4,5 @@
   (public_name ysc2229-part-two)
   (preprocess (pps ppx_inline_test ppx_expect))
   (wrapped false)
-  (libraries ysc2229-part-one)
+  (libraries ysc2229-part-one core batteries)
   (synopsis "Last seven weeks of YSC2229"))
