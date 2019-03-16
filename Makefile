@@ -11,6 +11,7 @@ default: all
 all:
 	dune runtest --profile release
 	dune build --profile release @install 
+	@test -L bin || ln -s _build/install/default/bin .
 
 # Clean up
 clean:
