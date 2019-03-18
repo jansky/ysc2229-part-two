@@ -56,29 +56,3 @@ let%test _ = dna_compression_test dna_string2
 let%test _ = dna_compression_test dna_string3
 let%test _ = dna_compression_test dna_string4
 
-(****************************************)
-(*     Testing RLE Compression          *)
-(****************************************)
-
-(* open Week_10_RunLengthEncoding *)
-
-(* let%test _ = dna_rle_compression_test dna_string1
- * let%test _ = dna_rle_compression_test dna_string2
- * let%test _ = dna_rle_compression_test dna_string3
- * let%test _ = dna_rle_compression_test dna_string4 *)
-
-(****************************************)
-(*     Testing Tree Serialisation       *)
-(****************************************)
-
-(* open Week_10_HuffmanCodes *)
-
-(* let%test _ =
- *   test_tree_serialization tree1 *)
-
-(* let%test _ =
- *   let t = compute_frequency_tree cfreqs1 in
- *   test_tree_serialization t *)
-
-(* let%test _ = 
- *   huffman_test abracadabra *)

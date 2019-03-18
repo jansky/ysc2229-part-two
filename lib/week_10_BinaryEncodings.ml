@@ -157,7 +157,4 @@ let dna_compression_test d =
   Sys.remove file;
   d = s'
 
-      
-(* Check the equality of the strings *)
-
-(* Experiment with the sizes of the fiels *)
+     
