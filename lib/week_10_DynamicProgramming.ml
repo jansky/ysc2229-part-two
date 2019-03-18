@@ -79,7 +79,7 @@ let price items i =
 let allowed_weight = 4
 
 (*************************************)
-(*       Determining the weight      *)
+(*       Determining the price       *)
 (*************************************)
 
 let knapsack_max_price max_weight items = 
@@ -88,7 +88,20 @@ let knapsack_max_price max_weight items =
      w - remaining weight        *)
 
   (* Implement me! *)
-  0
+  let rec solver n w =
+    if n < 0 || w = 0 then 0
+    else 
+      let wn = weight items n in
+      if wn > w 
+      then solver (n - 1) w
+      else 
+        let option1 = solver (n - 1) w in
+        let p = price items n in
+        let option2 = 
+          p + solver (n - 1) (w - wn) in
+        max option1 option2
+  in
+  solver (num_items - 1) max_weight
 
 
 (****************************************)
@@ -108,8 +121,17 @@ let knapsack_max_price_dynamic max_weight items =
   done;
 
   (* Main operation *)
-  (* Implement me! *)
-
+  for i = 1 to num_items do
+    for w  = 1 to max_weight do
+      if weight items (i - 1) <= w
+      then
+        let p = price items (i - 1) in
+        let option1 = m.(i - 1).(w) in
+        let option2 = m.(i - 1).(w - weight items (i-1)) + p in
+        m.(i).(w) <- max option1 option2
+      else m.(i).(w) <- m.(i - 1).(w)
+    done
+  done;
   (m.(num_items).(max_weight), m)
 
 
@@ -135,5 +157,17 @@ n  item    w  p |
 let knapsack_obtain_items max_weight items =
   let num_items = Array.length items in 
   (* Implement me! *)
-  []
+  let (_, m) = knapsack_max_price_dynamic max_weight items in
+  let res = ref [] in
+  let w = ref max_weight in
+  for i = num_items downto 1 do
+    if m.(i).(!w) = m.(i - 1).(!w) then ()
+    else begin
+      res := (i - 1) :: !res;
+      w := !w - weight items (i - 1) 
+    end
+  done;
+  !res
+
+
 

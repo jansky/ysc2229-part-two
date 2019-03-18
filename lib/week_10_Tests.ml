@@ -31,30 +31,30 @@ open Week_10_DynamicProgramming
 
 let%test _ = test_fib memo_fib 25
 
-(* let%test _ = 
- *   knapsack_max_price 4 fruit_sack = 6 *)
+let%test _ = 
+  knapsack_max_price 4 fruit_sack = 6
 
-(* let%test _ = 
- *   let (p, _) = knapsack_max_price_dynamic 4 fruit_sack in
- *   p = 6 *)
+let%test _ = 
+  let (p, _) = knapsack_max_price_dynamic 4 fruit_sack in
+  p = 6
 
-(* open Week_10_BinaryEncodings *)
+open Week_10_BinaryEncodings
 
 (****************************************)
 (*     Testing String Serialisation     *)
 (****************************************)
 
-(* let%test _ = 
- *   string_serialization_test abracadabra *)
+let%test _ = 
+  string_serialization_test abracadabra
 
 (****************************************)
 (*     Testing DNA Compression          *)
 (****************************************)
 
-(* let%test _ = dna_compression_test dna_string1
- * let%test _ = dna_compression_test dna_string2
- * let%test _ = dna_compression_test dna_string3
- * let%test _ = dna_compression_test dna_string4 *)
+let%test _ = dna_compression_test dna_string1
+let%test _ = dna_compression_test dna_string2
+let%test _ = dna_compression_test dna_string3
+let%test _ = dna_compression_test dna_string4
 
 (****************************************)
 (*     Testing RLE Compression          *)

@@ -50,13 +50,25 @@ let write_to_binary serialize filename data =
 
 let write_string_to_binary filename text = 
   let serialize out text = 
-    raise (Failure "Implement me!")
+    let size = String.length text in
+    for i = 0 to size - 1 do
+      let ch = int_of_char text.[i] in
+      write_bits out ~nbits:8 ch
+    done
   in
   write_to_binary serialize filename text
     
 let read_string_from_binary filename =  
   let deserialize input = 
-    raise (Failure "Implement me!")
+    let buffer = Buffer.create 1 in
+    (try
+       while true do
+         let bits = read_bits input 8 in
+         let ch = char_of_int bits in
+         Buffer.add_char buffer ch
+       done
+     with BatInnerIO.No_more_input -> ());
+    Buffer.contents buffer    
   in
   read_from_binary deserialize filename
 
@@ -69,7 +81,11 @@ xxd -b filename
 **)
 
 let string_serialization_test s = 
-  raise (Failure "Implement me!")
+  let file = "temp.tmp" in
+  write_string_to_binary file s;
+  let s' = read_string_from_binary file in
+  Sys.remove file;
+  s = s'
 
 (* Check that the files are the same *)
 
@@ -111,19 +127,36 @@ let dna_string4 = "ATAGATGCATAGCGCATAGCTAGATAGTGCTAGCGATGCATAGCGCAGATGCATAGCGCAG
 
 let write_dna_to_binary filename text = 
   let serialize out text = 
-    raise (Failure "Implement me!")
+    let size = String.length text in
+    write_bits out ~nbits:30 size;
+    for i = 0 to size - 1 do
+      let ch = dna_encoder text.[i] in
+      write_bits out ~nbits:2 ch 
+    done
   in
   write_to_binary serialize filename text
     
 let read_dna_from_binary filename =  
   let deserialize input = 
-    raise (Failure "Implement me!")
+    let buffer = Buffer.create 1 in
+    let size = read_bits input 30 in
+    for _ = 0 to size - 1 do
+      let bits = read_bits input 2 in
+      let ch = dna_decoder bits in
+      Buffer.add_char buffer ch
+    done;
+    Buffer.contents buffer
   in
   read_from_binary deserialize filename
 
 
 let dna_compression_test d = 
-    raise (Failure "Implement me!")
+  let file = "temp.tmp" in
+  write_dna_to_binary file d;
+  let s' = read_dna_from_binary file in
+  Sys.remove file;
+  d = s'
+
       
 (* Check the equality of the strings *)
 

@@ -40,8 +40,8 @@ let read_file_to_strings filename =
   strings
 
 let read_file_to_single_string filename = 
-  In_channel.with_file filename ~f:(fun input ->
-      In_channel.input_all input)
+  In_channel.with_file ~f:(fun input ->
+      In_channel.input_all input) filename 
 
 (* Writing *)
 
@@ -57,8 +57,9 @@ let write_strings_to_file filename lines =
 (* Let's copy a file to another *)
 
 let copy_file old_file new_file = 
-  (* Implement me! *)
-  ()
+  let contents = read_file_to_single_string old_file in
+  write_string_to_file new_file contents
+
 
 (*
 Checking consistency of the file
