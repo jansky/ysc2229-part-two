@@ -88,13 +88,8 @@ module CF = struct
   let pp (_, f) = Printf.sprintf "[tree -> %d]" f
 end
 
-open Week_05
-module PQ = PriorityQueue(CF)
-  
 (* Taking an array freq_chars as an input *)
 let compute_frequency_tree freq_chars = 
-  let open PQ in
-  let open Week_01 in
   raise (Failure "Implement me!")
 
 (*******************************************)
