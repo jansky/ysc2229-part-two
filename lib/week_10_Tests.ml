@@ -27,9 +27,9 @@ SOFTWARE.
 (*     Testing Dynamic Programming      *)
 (****************************************)
 
-(* open Week_10_DynamicProgramming *)
+open Week_10_DynamicProgramming
 
-(* let%test _ = test_fib memo_fib 25 *)
+let%test _ = test_fib memo_fib 25
 
 (* let%test _ = 
  *   knapsack_max_price 4 fruit_sack = 6 *)

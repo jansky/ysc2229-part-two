@@ -28,14 +28,24 @@ SOFTWARE.
 (*************************************)
 
 let rec naive_fib n = 
-  (* Implement me! *)
-  0
+  if n <= 1 then 1
+  else naive_fib (n - 1) + naive_fib (n - 2)
 
 (* With memoization *)
 
-let rec memo_fib n = 
-  (* Implement me! *)
-  0
+let memo_fib n = 
+  if n <= 1 then 1
+  else begin
+    let fib_prev = ref 1 in
+    let fib = ref 1 in
+    for i = 2 to n do 
+      let tmp = !fib_prev in
+      fib_prev := !fib;
+      fib := tmp + !fib
+    done;
+    !fib
+  end
+    
 
 (* Testing Fibonacci numbers *)
 

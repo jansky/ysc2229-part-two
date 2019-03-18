@@ -59,8 +59,23 @@ let is_safe board row col =
 (***********************************************)
 
 let rec solver board n col = 
-  (* TODO: implement me *)
-  false
+  let rec loop i (*  goes by the rows *) =
+    if i = n then false 
+    else if is_safe board i col 
+    then begin
+      board.(i).(col) <- 1;
+      if solver board n (col + 1)
+      then true
+      else begin
+        board.(i).(col) <- 0;
+        loop (i + 1)  
+      end      
+    end
+    else loop (i + 1)
+  in
+  if col >= n
+  then true
+  else loop 0
 
 let solve_n_queens board = 
   let n = Array.length board in
