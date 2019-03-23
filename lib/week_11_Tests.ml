@@ -55,13 +55,11 @@ open Week_11_HuffmanCodes
 (*          Testing Union Find            *)
 (******************************************)
 
-let ints = [|0;1;2;3;4;5;6;7;8;9|]
-
 open Week_11_UnionFind
 
 (* let%test "UF" =
  *   let open UnionFind in
- *   let uf = mk_UF ints in
+ *   let uf = mk_UF 10 in
  *   union uf 0 1;
  *   union uf 2 3;
  *   union uf 4 5;

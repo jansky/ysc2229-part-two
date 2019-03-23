@@ -30,10 +30,11 @@ module UnionFind = struct
     id : int array
   }
 
-  let mk_UF es = 
-    let n = Array.length es in 
+  let mk_UF n = 
+    let ints = 
+      Week_04.list_to_array (Week_03.iota (n - 1)) in
     { count = ref n;
-      id = es }
+      id = ints }
 
   let get_count uf = !(uf.count)
 
