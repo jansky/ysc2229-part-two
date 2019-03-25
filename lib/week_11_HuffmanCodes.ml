@@ -45,35 +45,32 @@ let tree1 =
         Node (Node (lc, lb), 
               Node (Node (lf, le), 
                     ld)))
-(* t : char t *)
+
 let rec write_tree out t = 
-  match t with
+  match t with 
   | Leaf c -> begin
-      write_bits out ~nbits:1 0;
+      write_bits out ~nbits:1 1;
       write_bits out ~nbits:8 (int_of_char c)
     end
-  | Node (l, r) -> begin
-      write_bits out ~nbits:1 1;
-      write_tree out r;
-      write_tree out l
-    end
-    
+  | Node (l, r) ->
+    write_bits out ~nbits:1 0;
+    write_tree out l;
+    write_tree out r
     
 let rec read_tree input = 
   match read_bits input 1 with
-  | 0 ->
+  | 1 -> 
     let c = read_bits input 8 |> char_of_int in
     Leaf c
-  | 1 -> 
-    let r = read_tree input in
+  | 0 ->
     let l = read_tree input in
+    let r = read_tree input in
     Node (l, r)
   | _ -> raise (Failure "Cannot unparse tree!")
     
 open Week_10_BinaryEncodings
 
 (* Test functions *)
-
 let write_tree_to_binary = write_to_binary write_tree
 let read_tree_from_binary = read_from_binary read_tree
 
@@ -100,21 +97,18 @@ let make_tree_array freq_chars =
   done;
   ftrees
 
-open Week_05
-
+(* Since we're using the max-queue, comparison is reversed *)
 module CF = struct
-  let pp _ = ""
   type t = char tree * int
-  let comp x y =
-    if snd x < snd y 
-    then 1 
-    else if snd x = snd y 
-    then 0
-    else - 1
+  let comp x y = 
+    if snd x < snd y then 1
+    else if fst x = fst y then 0
+    else -1
+  let pp (_, f) = Printf.sprintf "[tree -> %d]" f
 end
 
+open Week_05
 module PQ = PriorityQueue(CF)
-
   
 (* Taking an array freq_chars as an input *)
 let compute_frequency_tree freq_chars = 
@@ -124,12 +118,11 @@ let compute_frequency_tree freq_chars =
   let ftrees = make_tree_array freq_chars in
   let q = mk_queue ftrees in
   for i = 0 to n - 2 do
-   let (x, fx) = get_exn @@ get_exn @@ 
-     heap_extract_max q in
-   let (y, fy) = get_exn @@ get_exn @@ 
-     heap_extract_max q in
-   let n = (Node (x, y), fx + fy) in
-   max_heap_insert q n
+    (* TODO: fix this in Week_05! *)
+    let (x, fx) = get_exn @@ get_exn @@ heap_extract_max q in
+    let (y, fy) = get_exn @@ get_exn @@ heap_extract_max q in
+    let n = (Node (x, y), fx + fy) in
+    max_heap_insert q n
   done;
   fst @@ get_exn @@ get_exn @@ heap_extract_max q
 
@@ -141,17 +134,16 @@ let compute_freqs s =
   let n = String.length s in
   let m = 256 in
   let freqs = Array.create ~len:m 0 in
-  for j = 0 to n - 1 do
-    let i = int_of_char s.[j] in
+  for i = 0 to n - 1 do
+    let i = int_of_char s.[i] in
     freqs.(i) <- freqs.(i) + 1
   done;
-
   let cfreqs = Array.create ~len:m ('a', 0) in
-  for i = 0 to n - 1 do
+  for i = 0 to m - 1 do
     cfreqs.(i) <- (char_of_int i, freqs.(i))
   done;
   cfreqs
-  
+
 (***********************************************)
 (*  Create enconding table (lists of  bits)    *)
 (***********************************************)
@@ -162,8 +154,8 @@ let build_table t =
   
   let rec make_codes t acc = 
     match t with
-    | Leaf c ->
-      let i = int_of_char c in 
+    | Leaf c -> 
+      let i = int_of_char c in
       table.(i) <- acc
     | Node (l, r) -> begin
         make_codes l (acc @ [0]);
@@ -183,19 +175,20 @@ open Week_10_ReadingFiles
 let write_tree_and_data out (t, s) = 
   write_tree out t;
   let table = build_table t in
-  let n = String.length s in
+  let n = String.length s in 
+  (* Write length *)
   write_bits out ~nbits:30 n;
   for i = 0 to n - 1 do
-    let bits = table.(int_of_char s.[i]) in
-    List.iter bits ~f:(fun bit -> 
-        write_bits out ~nbits:1 bit)
+    let bits = table.(int_of_char s.[i])  in
+    List.iter bits ~f:(fun bit ->
+        write_bits out ~nbits:1 bit;)
   done
 
 let compress_string target s = 
   let freqs = compute_freqs s in
-  let t = compute_frequency_tree freqs in
+  let t = compute_frequency_tree freqs in 
   write_to_binary write_tree_and_data target (t, s)
- 
+
 let compress_file source target = 
   let s = read_file_to_single_string source in
   compress_string target s
@@ -208,19 +201,19 @@ let rec read_char_via_tree t input =
   match t with
   | Leaf c -> c
   | Node (l, r) ->
-    let b = read_bits input 1 in
+    let b = read_bits input 1 in 
     match b with
     | 0 -> read_char_via_tree l input
     | 1 -> read_char_via_tree r input
-    | _ -> raise (Failure "cannot")
+    | _ -> raise (Failure "This cannot happen!")
 
 let read_encoded input = 
   let t = read_tree input in
   let n = read_bits input 30 in
-  let buf = Buffer.create 100 in
+  let buf = Buffer.create 100 in 
   for i = 0 to n - 1 do
-    let c = read_char_via_tree t input in
-    Buffer.add_char buf c
+    let ch = read_char_via_tree t input in
+    Buffer.add_char buf ch
   done;
   Buffer.contents buf
 
