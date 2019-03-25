@@ -44,31 +44,45 @@ let tree1 =
   Node (la,
         Node (Node (lc, lb), 
               Node (Node (lf, le), 
-
                     ld)))
-
+(* t : char t *)
 let rec write_tree out t = 
-  (* Implement me *)
-  ()
+  match t with
+  | Leaf c -> begin
+      write_bits out ~nbits:1 0;
+      write_bits out ~nbits:8 (int_of_char c)
+    end
+  | Node (l, r) -> begin
+      write_bits out ~nbits:1 1;
+      write_tree out r;
+      write_tree out l
+    end
+    
     
 let rec read_tree input = 
   match read_bits input 1 with
-  (* Implement me *)  
+  | 0 ->
+    let c = read_bits input 8 |> char_of_int in
+    Leaf c
+  | 1 -> 
+    let r = read_tree input in
+    let l = read_tree input in
+    Node (l, r)
   | _ -> raise (Failure "Cannot unparse tree!")
     
 open Week_10_BinaryEncodings
 
 (* Test functions *)
 
-(* let write_tree_to_binary = write_to_binary write_tree
- * let read_tree_from_binary = read_from_binary read_tree *)
+let write_tree_to_binary = write_to_binary write_tree
+let read_tree_from_binary = read_from_binary read_tree
 
-(* let test_tree_serialization t = 
- *   let f = "tree.tmp" in
- *   write_tree_to_binary f t;
- *   let t' = read_tree_from_binary f in
- *   Sys.remove f;
- *   t = t' *)
+let test_tree_serialization t = 
+  let f = "tree.tmp" in
+  write_tree_to_binary f t;
+  let t' = read_tree_from_binary f in
+  Sys.remove f;
+  t = t'
 
 (*******************************************)
 (*    Computing frequency trees            *)
@@ -80,13 +94,44 @@ let cfreqs1 = [|('a', 45); ('b', 13); ('c', 12);
 let make_tree_array freq_chars = 
   let n = Array.length freq_chars in
   let ftrees = Array.create ~len:n (Leaf 'a', 1) in
-  (* Implement me *)
+  for i = 0 to n - 1 do
+    let (c, f) = freq_chars.(i) in
+    ftrees.(i) <- (Leaf c, f)
+  done;
   ftrees
+
+open Week_05
+
+module CF = struct
+  let pp _ = ""
+  type t = char tree * int
+  let comp x y =
+    if snd x < snd y 
+    then 1 
+    else if snd x = snd y 
+    then 0
+    else - 1
+end
+
+module PQ = PriorityQueue(CF)
+
   
 (* Taking an array freq_chars as an input *)
 let compute_frequency_tree freq_chars = 
-  (* Implement me *)
-  raise (Failure "Implement me!")
+  let open PQ in
+  let open Week_01 in
+  let n = Array.length freq_chars in
+  let ftrees = make_tree_array freq_chars in
+  let q = mk_queue ftrees in
+  for i = 0 to n - 2 do
+   let (x, fx) = get_exn @@ get_exn @@ 
+     heap_extract_max q in
+   let (y, fy) = get_exn @@ get_exn @@ 
+     heap_extract_max q in
+   let n = (Node (x, y), fx + fy) in
+   max_heap_insert q n
+  done;
+  fst @@ get_exn @@ get_exn @@ heap_extract_max q
 
 (*******************************************)
 (*    Computing frequencies for a string   *)
@@ -96,15 +141,17 @@ let compute_freqs s =
   let n = String.length s in
   let m = 256 in
   let freqs = Array.create ~len:m 0 in
-
-  (* Collect frequencies *)
+  for j = 0 to n - 1 do
+    let i = int_of_char s.[j] in
+    freqs.(i) <- freqs.(i) + 1
+  done;
 
   let cfreqs = Array.create ~len:m ('a', 0) in
-
-  (* Pair with characters *)
-
+  for i = 0 to n - 1 do
+    cfreqs.(i) <- (char_of_int i, freqs.(i))
+  done;
   cfreqs
-
+  
 (***********************************************)
 (*  Create enconding table (lists of  bits)    *)
 (***********************************************)
@@ -114,9 +161,14 @@ let build_table t =
   let table = Array.create ~len:m [] in 
   
   let rec make_codes t acc = 
-    (* Traverse the tree with accumulators *)
-    ()
-
+    match t with
+    | Leaf c ->
+      let i = int_of_char c in 
+      table.(i) <- acc
+    | Node (l, r) -> begin
+        make_codes l (acc @ [0]);
+        make_codes r (acc @ [1])
+      end
   in
   make_codes t [];
   table
@@ -129,15 +181,20 @@ open Week_10_ReadingFiles
 
 (* Writing the encoding tree an characters *)
 let write_tree_and_data out (t, s) = 
-  (* Write the tree *)
-  (* Build the table *)
-  (* Write string length *)
-  (* Write the string via table *)
-  ()
+  write_tree out t;
+  let table = build_table t in
+  let n = String.length s in
+  write_bits out ~nbits:30 n;
+  for i = 0 to n - 1 do
+    let bits = table.(int_of_char s.[i]) in
+    List.iter bits ~f:(fun bit -> 
+        write_bits out ~nbits:1 bit)
+  done
 
 let compress_string target s = 
-  (* Implement me! *)
-  ()
+  let freqs = compute_freqs s in
+  let t = compute_frequency_tree freqs in
+  write_to_binary write_tree_and_data target (t, s)
  
 let compress_file source target = 
   let s = read_file_to_single_string source in
@@ -148,15 +205,24 @@ let compress_file source target =
 (***********************************************)
 
 let rec read_char_via_tree t input =
-  (* Depending on whether the leaf or a node, return a character 
-     or proceed recursively *)
-  raise (Failure "Implement me!")
+  match t with
+  | Leaf c -> c
+  | Node (l, r) ->
+    let b = read_bits input 1 in
+    match b with
+    | 0 -> read_char_via_tree l input
+    | 1 -> read_char_via_tree r input
+    | _ -> raise (Failure "cannot")
 
 let read_encoded input = 
-  (* Read tree *)
-  (* Read length *)
-  (* Read characters *)
-  ""
+  let t = read_tree input in
+  let n = read_bits input 30 in
+  let buf = Buffer.create 100 in
+  for i = 0 to n - 1 do
+    let c = read_char_via_tree t input in
+    Buffer.add_char buf c
+  done;
+  Buffer.contents buf
 
 let decompress_file filename = 
   read_from_binary read_encoded filename

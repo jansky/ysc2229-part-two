@@ -41,15 +41,15 @@ open Week_11_RunLengthEncoding
 
 open Week_11_HuffmanCodes
 
-(* let%test _ =
- *   test_tree_serialization tree1 *)
+let%test _ =
+  test_tree_serialization tree1
 
-(* let%test _ =
- *   let t = compute_frequency_tree cfreqs1 in
- *   test_tree_serialization t *)
+let%test _ =
+  let t = compute_frequency_tree cfreqs1 in
+  test_tree_serialization t
 
-(* let%test _ = 
- *   huffman_test abracadabra *)
+let%test _ = 
+  huffman_test abracadabra
 
 (******************************************)
 (*          Testing Union Find            *)
