@@ -27,7 +27,7 @@ SOFTWARE.
 (*         Working with bits        *)
 (************************************)
 
-open Core
+open Core_kernel
 open Extlib.IO
 
 let read_from_binary deserialize filename =  

@@ -29,7 +29,7 @@ SOFTWARE.
 (******************************)
 
 (* The necessary package *)
-open Core
+open Core_kernel
 
 (* Reading *)
 
