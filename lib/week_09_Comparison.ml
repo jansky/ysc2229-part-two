@@ -31,13 +31,15 @@ SOFTWARE.
 open Week_09_StringSearch
 open Week_09_RabinKarp
 open Week_09_KMP
+open Core
+       
 
 let evaluate_search search name s ps pn = 
   print_endline "";
   Printf.printf "[%s] Pattern in: " name;
-  Week_03.time (List.iter (fun p -> test_pattern_in search s p)) ps;
+  Week_03.time (List.iter ~f:(fun p -> test_pattern_in search s p)) ps;
   Printf.printf "[%s] Pattern not in: " name;
-  Week_03.time (List.iter (fun p -> test_pattern_not_in search s p)) pn
+  Week_03.time (List.iter ~f:(fun p -> test_pattern_not_in search s p)) pn
 
 (*
 
@@ -62,7 +64,7 @@ let repetitive_string n =
   let pat2 = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaac" in
   let mk n = 
     let t = List.init n (fun x -> if x = n - 1 then pat1 else ast) in
-    String.concat "" t 
+    String.concat ~sep:"" t 
   in
   (mk n, [pat1], [pat2])
 
