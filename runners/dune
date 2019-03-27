@@ -1,0 +1,6 @@
+(executables
+ (names compress_text decompress_text)
+  (public_names compress decompress)
+  (modules compress_text decompress_text)
+  (libraries ysc2229-part-one ysc2229-part-two)
+  (package ysc2229-part-two))
