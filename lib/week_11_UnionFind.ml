@@ -42,7 +42,7 @@ module UnionFind = struct
   let find uf p = 
     let r = ref p in 
     while (!r <> uf.id.(!r)) do
-      r := uf.id.(!r)
+      r := uf.id.(!r);
     done;
     !r
 
