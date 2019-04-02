@@ -207,7 +207,7 @@ Supported operations:
       done
     in
     let acc = (mk_queue 0) in
-    let stack = mk_stack 0 in
+    let stack = mk_stack () in
     (match get_root t with
     | None -> ()
     | Some n -> begin
