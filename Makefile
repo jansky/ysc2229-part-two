@@ -9,7 +9,7 @@ default: all
 # The library can be loaded in utop for interactive testing.
 # The flag "--profile release" is passed to avoid warnings-as-errors
 all:
-	dune runtest --profile release
+	dune runtest . --profile release
 	dune build --profile release @install 
 	@test -L bin || ln -s _build/install/default/bin .
 
@@ -20,6 +20,7 @@ clean:
 # Remove remaining files/folders ignored by git as defined in .gitignore (-X).
 	git clean -dfXq
 
-# Run utop
 utop:
 	dune utop . --profile release
+	rm *.pdf *.dot
+

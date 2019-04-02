@@ -42,6 +42,8 @@ cv/*.out
 *.synctex.gz
 *.out.ps
 .#*
+*.pdf 
+*.dot
 
 .DS_Store
 
