@@ -319,13 +319,15 @@ Supported operations:
       
       (* link x's parent to y *)
       y.parent := parent x;
-      
-      (if parent x = None
-       then t.root := Some y
-       else if x == get_exn @@ left (get_exn @@ parent x)
-       then (get_exn @@ parent x).left := Some y
-       else (get_exn @@ parent x).right := Some y);
-      
+
+      (match parent x with 
+       | None -> t.root := Some y
+       | Some p -> match left p with
+         | Some l when x == l ->
+           p.left := Some y
+         | _ ->
+           p.right := Some y);
+            
       (* Make x the left child of y *)
       y.left := Some x;
       x.parent := Some y      
