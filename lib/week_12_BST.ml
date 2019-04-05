@@ -287,7 +287,8 @@ Supported operations:
       let y = find_min_node z_right_child in
       (* Fact: `y` has no left child *)
 
-      (if parent y <> Some z
+      (if parent y <> None &&
+          z != get_exn @@ parent y
        then 
       (*  If y is not immediately under z,
           replace y by its right subtree *)
