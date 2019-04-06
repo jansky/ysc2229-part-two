@@ -287,7 +287,8 @@ Supported operations:
       let y = find_min_node z_right_child in
       (* Fact: `y` has no left child *)
 
-      (if parent y <> Some z
+      (if parent y <> None &&
+          z != get_exn @@ parent y
        then 
       (*  If y is not immediately under z,
           replace y by its right subtree *)
@@ -306,28 +307,30 @@ Supported operations:
   (* 9. Rotations and balanced tree *)
   (**********************************)
 
-  let left_rotate t x = 
+  let left_rotate t x =
     match right x with
     | None -> ()
     | Some y ->
-
+      
       (* turn y's left subtree into x's right subtree *)
       x.right := left y;
       (if left y <> None
        then (get_exn @@ left y).parent := Some x);
-
+      
       (* link x's parent to y *)
       y.parent := parent x;
-  
-      (if parent x = None 
-       then t.root := Some y
-      else if Some x = left (get_exn @@ parent x) 
-      then (get_exn @@ parent x).left := Some y
-      else (get_exn @@ parent x).right := Some y);
 
+      (match parent x with 
+       | None -> t.root := Some y
+       | Some p -> match left p with
+         | Some l when x == l ->
+           p.left := Some y
+         | _ ->
+           p.right := Some y);
+            
       (* Make x the left child of y *)
       y.left := Some x;
-      x.parent := Some y
+      x.parent := Some y      
       
 end
 
